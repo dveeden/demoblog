@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Demo Blog: {{ .Title }}</title>
+</head>
+<h1>{{ .Title }}</h1>
+
+{{ .Rendered }}
+
+<br>
+<i>Comments</i>
+<br>
+{{range .Comments}}
+{{ .Author }}: {{ .Comment }}
+<br>&nbsp;<br>
+{{end}}
+
+<a href="/">Home</a>

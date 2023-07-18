@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Demo Blog</title>
+</head>
+<h1>Welcome to the <i>demoblog</i></h1>
+
+<form method="POST">
+    Title: <input type="text" name="title" /><br>
+    <textarea name="body"></textarea><br>
+    <input type="submit" />
+</form>
+
+<hr>
+{{range .Posts}}
+<h2>{{ .Title }}</h2>
+{{ .Summary }}<br>
+<a href="/posts?id={{ .Id }}">Read more...</a><br>
+{{end}}
+<hr>
+
+Proudly served by TiDB: 
+<pre>
+{{ .Dbver }}
+</pre>
+
+Last database heartbeat: {{ .Tick }}
+</html>
