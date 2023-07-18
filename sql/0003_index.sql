@@ -1,3 +1,5 @@
+USE blog;
+
 -- Comments are looked up per post_id
 ALTER TABLE comments ADD INDEX(post_id);
 
