@@ -38,7 +38,6 @@ func tickerChecker() {
 	var ts time.Time
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-		defer cancel()
 		row := db.QueryRowContext(ctx, "SELECT ts FROM ticker WHERE id=1")
 		err = row.Scan(&ts)
 		if err != nil {
@@ -47,6 +46,7 @@ func tickerChecker() {
 			log.Printf("ticker latency: %-36s is %s ago\n", ts, time.Since(ts))
 		}
 
+		cancel()
 		time.Sleep(time.Second * 1)
 	}
 }
