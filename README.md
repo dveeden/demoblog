@@ -51,3 +51,15 @@ xdg-open http://127.0.0.1:8080/
     - Comments per hour of day
 
 
+# Things to try
+
+- Block writes
+
+```sql
+BEGIN;
+SELECT * FROM ticker FOR UPDATE;
+DO SLEEP(10);
+ROLLBACK;
+```
+
+This should show increase in the ticker latency. Other things like DDL etc should not show this.

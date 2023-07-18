@@ -4,28 +4,12 @@ import (
 	"embed"
 	"log"
 	"net/http"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 //go:embed css
 var cssFS embed.FS
-
-type Comment struct {
-	Comment string
-	Author  string
-	Created time.Time
-}
-
-type Post struct {
-	Id       uint64
-	Title    string
-	Summary  string
-	Content  string
-	Comments []Comment
-	Rendered string
-}
 
 func main() {
 	http.HandleFunc("/", indexPage)
@@ -36,6 +20,7 @@ func main() {
 	http.Handle("/css/", fs)
 
 	go ticker()
+	go tickerChecker()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

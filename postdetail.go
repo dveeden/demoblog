@@ -10,10 +10,6 @@ import (
 	_ "embed"
 
 	"log"
-
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/html"
-	"github.com/gomarkdown/markdown/parser"
 )
 
 //go:embed html/post.html
@@ -104,11 +100,7 @@ func postPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	mdParser := parser.NewWithExtensions(parser.CommonExtensions)
-	htmlRenderer := html.NewRenderer(html.RendererOptions{Flags: html.CommonFlags})
-	doc := mdParser.Parse([]byte(p.Content))
-	p.Rendered = string(markdown.Render(doc, htmlRenderer))
-
+	p.Render() // Markdown to HTML
 	err = t.Execute(w, p)
 	if err != nil {
 		log.Print(err)
