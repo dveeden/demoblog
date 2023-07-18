@@ -49,9 +49,9 @@ func postPage(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		r.ParseForm()
-		if r.Form["title"][0] != "" && r.Form["body"][0] != "" {
-			_, err = db.Exec(`INSERT INTO comments(body, author_id) VALUES (?,?,?)`,
-				r.Form["title"][0], r.Form["body"][0], 1)
+		if r.Form["comment"][0] != "" {
+			_, err = db.Exec(`INSERT INTO comments(body, post_id, author_id) VALUES (?,?,?)`,
+				r.Form["comment"][0], id, nil)
 			if err != nil {
 				log.Print(err)
 			}
@@ -78,6 +78,7 @@ func postPage(w http.ResponseWriter, r *http.Request) {
 			JSON_ARRAYAGG(
 					JSON_OBJECT(
 						"comment", c.body,
+						"created", DATE_FORMAT(created, "%Y-%m-%dT%H%:%i:%SZ"),
 						"author", IFNULL(a.name, "Anonymous user")
 					)
 			) 

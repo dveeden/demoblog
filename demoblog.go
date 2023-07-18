@@ -4,8 +4,7 @@ import (
 	"embed"
 	"log"
 	"net/http"
-
-	_ "embed"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -16,6 +15,7 @@ var cssFS embed.FS
 type Comment struct {
 	Comment string
 	Author  string
+	Created time.Time
 }
 
 type Post struct {
@@ -30,6 +30,7 @@ type Post struct {
 func main() {
 	http.HandleFunc("/", indexPage)
 	http.HandleFunc("/posts", postPage)
+	http.HandleFunc("/analytics", analyticsPage)
 
 	fs := http.FileServer(http.FS(cssFS))
 	http.Handle("/css/", fs)
