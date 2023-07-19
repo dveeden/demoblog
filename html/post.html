@@ -27,9 +27,27 @@
 <div class="comment">
 <span class="commentauthor">{{ .Author }}</span> on {{ .Created }}<br>
 {{ .Comment }}
+<botton type="button" class="btn btn-like btn-light"><span class="bi-hand-thumbs-up" id="like-comment-{{ .Id }}"></span></botton>
 </div>
 {{end}}
 
 <a href="/">Home</a>
+<script>
+    document.querySelectorAll('.btn-like').forEach(
+        (s) => {
+            s.addEventListener("click",
+                (e) => {
+                    const req = new XMLHttpRequest();
+                    const action = e.target.id.split('-')
+                    const actionUrl = new URL("/likes", document.location)
+                    actionUrl.searchParams.append("type", action[1])
+                    actionUrl.searchParams.append("id", action[2])
+                    req.open("POST", actionUrl.href)
+                    req.send();
+                }
+            )
+        }
+    );
+</script>
 </body>
 </html>

@@ -73,6 +73,7 @@ func postPage(w http.ResponseWriter, r *http.Request) {
 		`SELECT
 			JSON_ARRAYAGG(
 					JSON_OBJECT(
+						"id", c.id,
 						"comment", c.body,
 						"created", DATE_FORMAT(created, "%Y-%m-%dT%H%:%i:%SZ"),
 						"author", IFNULL(a.name, "Anonymous user")

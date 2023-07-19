@@ -30,8 +30,8 @@ xdg-open http://127.0.0.1:8080/
 # TODO
 
 - General
-    - Likes for posts
-    - Likes for comments
+    - Show the number of likes on posts
+    - Show the number of likes on comments
     - Storing a cached version of the rendered markdown? Could be used for the summary on the index page.
     - TiCDC & Kafka for comments, likes, heartbeat (alert?)
     - Load generating script/tool
@@ -43,11 +43,8 @@ xdg-open http://127.0.0.1:8080/
     ```
 
     - Number of comments per author
-
     - Likes per comment/post
-
     - Average length of comment, post
-
     - Comments per hour of day
 
 

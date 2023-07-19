@@ -15,6 +15,7 @@ func main() {
 	http.HandleFunc("/", indexPage)
 	http.HandleFunc("/posts", postPage)
 	http.HandleFunc("/analytics", analyticsPage)
+	http.HandleFunc("/likes", likesApi)
 
 	fs := http.FileServer(http.FS(cssFS))
 	http.Handle("/css/", fs)

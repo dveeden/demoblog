@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS posts (
     author_id BIGINT UNSIGNED NOT NULL,
     title VARCHAR(255) NOT NULL,
     live_after TIMESTAMP(6) NULL COMMENT 'Only show post after this go-live date if set',
+    likes BIGINT UNSIGNED NOT NULL DEFAULT 0,
     body TEXT
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS comments (
     post_id BIGINT UNSIGNED NOT NULL,
     author_id BIGINT UNSIGNED NULL COMMENT 'Set to NULL if anonymous',
     created TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    likes BIGINT UNSIGNED NOT NULL DEFAULT 0,
     body TEXT
 );
 
