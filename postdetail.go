@@ -3,9 +3,9 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"html/template"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	_ "embed"
 

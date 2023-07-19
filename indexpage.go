@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"html/template"
 	"net/http"
-	"text/template"
 	"time"
 
 	_ "embed"
