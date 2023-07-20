@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	kafka "github.com/segmentio/kafka-go"
@@ -12,7 +14,9 @@ import (
 type tidbMessage struct {
 	Database string
 	Table    string
+	Type     string
 	Data     []map[string]string
+	Old      []map[string]string
 }
 
 func main() {
@@ -49,19 +53,26 @@ func main() {
 			log.Print(err)
 		}
 
-		if j.Database == "blog" && j.Table == "ticker" {
-			loc, _ := time.LoadLocation("Europe/Amsterdam")
-			ts, _ := time.ParseInLocation("2006-01-02 15:04:05.999", j.Data[0]["ts"], loc)
-			// \a is Terminal bell, to simulate heartbeat
-			log.Printf(
-				"\aReceived heartbeat at %s which is %s ago, total heartbeats: %d",
-				ts, time.Since(ts), totalHeartbeats,
-			)
-			totalHeartbeats++
-		} else if j.Database == "blog" && j.Table == "posts" {
-			log.Printf("post: %#v", j)
+		fmt.Printf("%#v\n", j)
+
+		if j.Type == "UPDATE" {
+			if j.Database == "blog" && j.Table == "ticker" {
+				loc, _ := time.LoadLocation("Europe/Amsterdam")
+				ts, _ := time.ParseInLocation("2006-01-02 15:04:05.999", j.Data[0]["ts"], loc)
+				// \a is Terminal bell, to simulate heartbeat
+				log.Printf(
+					"\aReceived heartbeat at %s which is %s ago, total heartbeats: %d",
+					ts, time.Since(ts), totalHeartbeats,
+				)
+				totalHeartbeats++
+			} else if j.Database == "blog" && j.Table == "posts" {
+				likesNr, _ := strconv.Atoi(j.Data[0]["likes"])
+				log.Printf("post: %s got %d likes", j.Data[0]["title"], likesNr)
+			} else {
+				log.Printf("Got %s event for %s", j.Type, j.Table)
+			}
 		} else {
-			log.Printf("Got event for %s", j.Table)
+			log.Printf("Got %s event for %s", j.Type, j.Table)
 		}
 	}
 
