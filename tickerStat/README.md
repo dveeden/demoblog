@@ -1,6 +1,6 @@
 # Overview
 
-This is to send events from TiDB to Kafka with TiCDC
+This is to send events from TiDB to Kafka with TiCDC. Then the example code is a Kafka consumer that prints some info about received events.
 
 # setup
 
