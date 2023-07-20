@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -52,8 +51,6 @@ func main() {
 		if err != nil {
 			log.Print(err)
 		}
-
-		fmt.Printf("%#v\n", j)
 
 		if j.Type == "UPDATE" {
 			if j.Database == "blog" && j.Table == "ticker" {
