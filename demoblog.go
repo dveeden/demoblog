@@ -11,6 +11,8 @@ import (
 //go:embed css
 var cssFS embed.FS
 
+var dburi string = "root@tcp(127.0.0.1:4000)/blog?parseTime=true"
+
 func main() {
 	http.HandleFunc("/", indexPage)
 	http.HandleFunc("/posts", postPage)

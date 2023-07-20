@@ -39,11 +39,35 @@ xdg-open http://127.0.0.1:8080/
     - Number of comments per post
 
     ```
-    SELECT p.title, COUNT(c.id) FROM posts p LEFT JOIN comments c ON p.id=c.post_id GROUP BY p.id
+    SELECT
+        p.title,
+        COUNT(c.id)
+    FROM
+        posts p
+    LEFT JOIN
+        comments c ON p.id=c.post_id
+    GROUP BY
+        p.id
     ```
 
     - Number of comments per author
-    - Likes per comment/post
+    - Most liked posts/comments
+
+    ```
+    SELECT
+        p.title,
+        p.likes,
+        SUM(c.likes) 'comment likes'
+    FROM
+        posts p
+    JOIN
+        comments c ON c.post_id=p.id
+    GROUP BY
+        p.id
+    ORDER BY
+        p.likes+SUM(c.likes) DESC
+    LIMIT 5;
+    ```
     - Average length of comment, post
     - Comments per hour of day
 
@@ -60,3 +84,6 @@ ROLLBACK;
 ```
 
 This should show increase in the ticker latency. Other things like DDL etc should not show this.
+
+- Add/remove TiFlash replicas
+- Add/remove index on `comments.post_id`

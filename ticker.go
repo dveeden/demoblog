@@ -8,7 +8,7 @@ import (
 )
 
 func ticker() {
-	db, err := sql.Open("mysql", "root@tcp(127.0.0.1:4000)/blog")
+	db, err := sql.Open("mysql", dburi)
 	if err != nil {
 		log.Fatalf("Failed to setup database connection for ticker: %s", err)
 	}
@@ -28,7 +28,7 @@ func ticker() {
 }
 
 func tickerChecker() {
-	db, err := sql.Open("mysql", "root@tcp(127.0.0.1:4000)/blog?parseTime=true")
+	db, err := sql.Open("mysql", dburi)
 	if err != nil {
 		log.Fatalf("Failed to setup database connection for ticker checker: %s", err)
 	}

@@ -34,7 +34,7 @@ func postPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("mysql", "root@tcp(127.0.0.1:4000)/blog")
+	db, err := sql.Open("mysql", dburi)
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(500)
