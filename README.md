@@ -87,3 +87,4 @@ This should show increase in the ticker latency. Other things like DDL etc shoul
 
 - Add/remove TiFlash replicas
 - Add/remove index on `comments.post_id`
+- Try foreign keys
