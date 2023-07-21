@@ -18,7 +18,7 @@ type loadGen struct {
 	maxId   map[string]uint64
 }
 
-func (lg *loadGen) basicRequets() {
+func (lg *loadGen) basicRequests() {
 
 	endpoints := []struct {
 		method string
@@ -129,7 +129,7 @@ func main() {
 	}
 
 	for {
-		lg.basicRequets()
+		lg.basicRequests()
 
 		// Unordered likes are needed to discover the max post and comment ID's
 		// Running this each round to discover new ID's
