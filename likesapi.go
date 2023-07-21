@@ -35,17 +35,38 @@ func likesApi(w http.ResponseWriter, r *http.Request) {
 
 	switch likeType {
 	case "post":
-		_, err = db.Exec("UPDATE posts SET likes=likes+1 WHERE id=?", likeId)
+		r, err := db.Exec("UPDATE posts SET likes=likes+1 WHERE id=?", likeId)
 		if err != nil {
 			log.Print(err)
 		}
-	case "comment":
-		_, err = db.Exec("UPDATE comments SET likes=likes+1 WHERE id=?", likeId)
+		rowsUpdated, err := r.RowsAffected()
 		if err != nil {
 			log.Print(err)
+		}
+		if rowsUpdated < 1 {
+			w.WriteHeader(404)
+			w.Write([]byte("post not found"))
+			return
+		}
+	case "comment":
+		r, err := db.Exec("UPDATE comments SET likes=likes+1 WHERE id=?", likeId)
+		if err != nil {
+			log.Print(err)
+		}
+		rowsUpdated, err := r.RowsAffected()
+		if err != nil {
+			log.Print(err)
+		}
+		if rowsUpdated < 1 {
+			w.WriteHeader(404)
+			w.Write([]byte("post not found"))
+			return
 		}
 	default:
 		log.Print("unknown like type")
+		w.WriteHeader(404)
+		w.Write([]byte("unknown like type"))
+		return
 	}
 
 	w.WriteHeader(200)

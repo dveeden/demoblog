@@ -55,7 +55,7 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := db.Query("SELECT id,title,body FROM posts LIMIT 10")
+	rows, err := db.Query("SELECT id,title,body FROM posts LIMIT 30")
 	if err != nil {
 		log.Print(err)
 		w.WriteHeader(500)
