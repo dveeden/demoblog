@@ -9,6 +9,9 @@ import (
 	_ "embed"
 
 	"log"
+
+	"github.com/VividCortex/mysqlerr"
+	"github.com/go-sql-driver/mysql"
 )
 
 //go:embed html/index.html
@@ -18,9 +21,10 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 	var t = template.Must(template.New("index").Parse(indexTmpl))
 
 	var indexContent struct {
-		Dbver string
-		Tick  time.Time
-		Posts []Post
+		Dbver  string
+		Dbtype string
+		Tick   time.Time
+		Posts  []Post
 	}
 
 	if r.URL.Path != "/" {
@@ -47,12 +51,35 @@ func indexPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// This query returns ER_SP_DOES_NOT_EXIST on MySQL as expected.
+	// So we allow this to continue if that happens.
 	if err := db.QueryRow("SELECT TIDB_VERSION(), ts FROM ticker WHERE id=1").Scan(
 		&indexContent.Dbver, &indexContent.Tick); err != nil {
-		log.Print(err)
-		w.WriteHeader(500)
-		w.Write([]byte("Database query for db version and ticker failed"))
-		return
+		if dbErr, ok := err.(*mysql.MySQLError); ok {
+			if dbErr.Number != mysqlerr.ER_SP_DOES_NOT_EXIST {
+				log.Print(err)
+				w.WriteHeader(500)
+				w.Write([]byte("Database query for db version and ticker failed"))
+				return
+			}
+		} else {
+			log.Print(err)
+			w.WriteHeader(500)
+			w.Write([]byte("Database query for db version and ticker failed"))
+			return
+		}
+	}
+
+	indexContent.Dbtype = "TiDB"
+	if indexContent.Dbver == "" {
+		indexContent.Dbtype = "MySQL"
+		if err := db.QueryRow("SELECT VERSION(), ts FROM ticker WHERE id=1").Scan(
+			&indexContent.Dbver, &indexContent.Tick); err != nil {
+			log.Print(err)
+			w.WriteHeader(500)
+			w.Write([]byte("Database query for db version and ticker failed"))
+			return
+		}
 	}
 
 	rows, err := db.Query("SELECT id,title,body FROM posts LIMIT 30")
