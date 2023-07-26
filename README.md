@@ -34,6 +34,9 @@ xdg-open http://127.0.0.1:8080/
     - Show the number of likes on comments
     - Storing a cached version of the rendered markdown? Could be used for the summary on the index page.
     - TiCDC & Kafka for comments, likes, heartbeat (alert?)
+    - Fix MySQL compatibility:
+        - `TIDB_VERSION()` usage
+        - Setting TiFlash replica in `sql/0003_index.sql`
 - Analytics
     - Number of comments per author
     - Most liked posts/comments
