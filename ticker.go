@@ -23,7 +23,7 @@ func ticker() {
 		if err != nil {
 			log.Print(err)
 		}
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Duration(60/bpm) * time.Second)
 	}
 }
 
@@ -47,6 +47,6 @@ func tickerChecker() {
 		}
 
 		cancel()
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Duration(60/bpm) * time.Second)
 	}
 }
