@@ -40,8 +40,18 @@ func main() {
 	fs := http.FileServer(http.FS(cssFS))
 	http.Handle("/css/", fs)
 
-	go ticker()
-	go tickerChecker()
+	// 60/bpm results in 0, which means no sleep.
+	if bpm > 60 {
+		log.Print("Limiting ticker to max 60 BPM")
+		bpm = 60
+	}
+
+	if bpm < 1 {
+		log.Print("Ticker disabled")
+	} else {
+		go ticker()
+		go tickerChecker()
+	}
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
