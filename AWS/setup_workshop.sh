@@ -11,7 +11,7 @@ sudo ln -s /usr/local/go/bin/go /bin/go
 
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
 . .bashrc
-tiup install playground pd tidb tikv tiflash grafana prometheus
+tiup install playground pd tidb tikv tiflash grafana prometheus ctl
 
 if [ ! -e dm-master ]; then
   wget https://download.pingcap.org/tidb-community-toolkit-v7.2.0-linux-amd64.tar.gz
