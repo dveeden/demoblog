@@ -10,7 +10,7 @@ sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz
 sudo ln -s /usr/local/go/bin/go /bin/go
 
 curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-. .bashrc
+. ~/.bashrc
 tiup install playground pd tidb tikv tiflash grafana prometheus ctl
 
 if [ ! -e dm-master ]; then
