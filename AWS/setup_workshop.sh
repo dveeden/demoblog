@@ -43,7 +43,7 @@ go build
 pushd loadGen
 go build
 popd
-pushd ticketStat
+pushd tickerStat
 go build
 popd
 popd
