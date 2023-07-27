@@ -40,6 +40,12 @@ sudo mysql < demoblog/sql/0003_index.sql
 
 pushd demoblog
 go build
+pushd loadGen
+go build
+popd
+pushd ticketStat
+go build
+popd
 popd
 
 # Cleanup
