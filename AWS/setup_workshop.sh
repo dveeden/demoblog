@@ -32,7 +32,7 @@ fi
 sudo docker pull docker.redpanda.com/redpandadata/redpanda:latest
 
 sudo mysql -e "CREATE USER 'blog'@'%' IDENTIFIED BY 'blog'"
-sudo mysql -e 'CREATE SCHEMA blog'
+sudo mysql -e 'CREATE SCHEMA blog COLLATE utf8mb4_general_ci'
 sudo mysql -e "GRANT ALL ON *.* TO 'blog'@'%'"
 sudo mysql < demoblog/sql/0001_schema.sql
 sudo mysql < demoblog/sql/0002_data.sql 
