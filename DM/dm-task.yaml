@@ -1,0 +1,15 @@
+name: mysql-to-tidb
+task-mode: "all"
+mysql-instances:
+  - source-id: "mysql"
+    block-allow-list: "blog"
+
+target-database:
+  host: "127.0.0.1"
+  port: 4000
+  user: "root"
+  password: ""
+
+block-allow-list:
+  blog:
+    do-dbs: ["blog"] 
