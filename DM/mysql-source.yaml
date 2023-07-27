@@ -1,4 +1,3 @@
-enable-gtid: true
 source-id: "mysql"
 from:
   host: "127.0.0.1"
