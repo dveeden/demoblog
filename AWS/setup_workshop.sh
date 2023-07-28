@@ -3,7 +3,7 @@
 echo "Setting up"
 
 sudo apt-get update
-sudo apt-get install -y mysql-server mysql-client curl docker.io
+sudo apt-get install -y unzip mysql-server mysql-client curl docker.io
 
 wget https://go.dev/dl/go1.20.6.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.20.6.linux-amd64.tar.gz
