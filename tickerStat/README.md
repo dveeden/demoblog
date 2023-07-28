@@ -7,7 +7,7 @@ This is to send events from TiDB to Kafka with TiCDC. Then the example code is a
 To use RedPanda as Kafka service
 
 ```
-docker run -d --pull=always --name=redpanda-1 --rm \
+docker run -d --name=redpanda-1 --rm \
 -p 8081:8081 \
 -p 8082:8082 \
 -p 9092:9092 \
@@ -27,6 +27,11 @@ See the [docs](https://docs.redpanda.com/docs/21.11/quickstart/quick-start-docke
 When running TiUP Playground you need to set `--ticdc 1` like this:
 ```
 tiup playground --ticdc 1 ...
+```
+
+When already running TiUP, you can scale out:
+```
+tiup playground scale-out --ticdc 1
 ```
 
 TiCDC requires `max.message.bytes` to be set on the broker. This can be done with `rpk`:
