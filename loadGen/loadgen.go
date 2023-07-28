@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -153,6 +154,10 @@ func (lg *loadGen) comment(nr int) {
 }
 
 func main() {
+	var sleeptime int
+	flag.IntVar(&sleeptime, "sleep", 2, "sleep time in seconds between runs")
+	flag.Parse()
+
 	lg := loadGen{
 		urlBase: url.URL{
 			Scheme: "http",
@@ -175,6 +180,6 @@ func main() {
 		lg.like("post", 5)
 		lg.like("comment", 10)
 		lg.comment(3)
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * time.Duration(sleeptime))
 	}
 }
