@@ -48,7 +48,12 @@ go build
 popd
 popd
 
+# Redpanda CLI
+curl -LO https://github.com/redpanda-data/redpanda/releases/latest/download/rpk-linux-amd64.zip
+unzip rpk-linux-amd64.zip
+sudo mv rpk /bin/
+
 # Cleanup
-rm -rf go1.20.6.linux-amd64.tar.gz tidb-community-toolkit-v7.2.0-linux-amd64 tidb-community-toolkit-v7.2.0-linux-amd64.tar.gz
+rm -rf go1.20.6.linux-amd64.tar.gz tidb-community-toolkit-v7.2.0-linux-amd64 tidb-community-toolkit-v7.2.0-linux-amd64.tar.gz rpk-linux-amd64.zip
 
 
