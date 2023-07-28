@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
 	"math/rand"
@@ -55,6 +57,22 @@ func (lg *loadGen) basicRequests() {
 	}
 }
 
+type postApiResponse struct {
+	PostIds []uint64 `json:"postids"`
+}
+
+func (lg *loadGen) postids() (resp postApiResponse) {
+	u := lg.urlBase.JoinPath("/posts/ids")
+	r, err := http.Get(u.String())
+	if err != nil {
+		log.Print("failed to get post ids")
+		return
+	}
+	body, _ := ioutil.ReadAll(r.Body)
+	json.Unmarshal(body, &resp)
+	return
+}
+
 // likePosts tries to like all posts until starting by the previously discovered maxId (or 1) and
 // increasing the id of the post util it doesn't get a HTTP 200 OK.
 func (lg *loadGen) like(likeType string, random int) {
@@ -77,23 +95,41 @@ func (lg *loadGen) like(likeType string, random int) {
 			}
 		}
 	} else {
-		postID := lg.maxId[likeType]
+		if likeType == "post" {
+			for _, postID := range lg.postids().PostIds {
+				vals.Set("id", strconv.FormatUint(postID, 10))
+				u.RawQuery = vals.Encode()
+				r, err := http.Post(u.String(), "application/json", nil)
+				if err != nil {
+					panic(err)
+				}
+				log.Printf("LIKE ORDERED: %s %s\n", r.Status, u.String())
+				if r.StatusCode != 200 {
+					return
+				}
+				if postID > lg.maxId[likeType] {
+					lg.maxId[likeType] = postID
+				}
+			}
+		} else {
+			postID := lg.maxId[likeType]
 
-		for {
-			vals.Set("id", strconv.FormatUint(postID, 10))
-			u.RawQuery = vals.Encode()
-			r, err := http.Post(u.String(), "application/json", nil)
-			if err != nil {
-				panic(err)
+			for {
+				vals.Set("id", strconv.FormatUint(postID, 10))
+				u.RawQuery = vals.Encode()
+				r, err := http.Post(u.String(), "application/json", nil)
+				if err != nil {
+					panic(err)
+				}
+				log.Printf("LIKE ORDERED: %s %s\n", r.Status, u.String())
+				if r.StatusCode != 200 {
+					return
+				}
+				if postID > lg.maxId[likeType] {
+					lg.maxId[likeType] = postID
+				}
+				postID++
 			}
-			log.Printf("LIKE ORDERED: %s %s\n", r.Status, u.String())
-			if r.StatusCode != 200 {
-				return
-			}
-			if postID > lg.maxId[likeType] {
-				lg.maxId[likeType] = postID
-			}
-			postID++
 		}
 	}
 }
