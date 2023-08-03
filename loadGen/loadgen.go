@@ -47,6 +47,9 @@ func (lg *loadGen) basicRequests() {
 			switch e.method {
 			case "GET":
 				r, err = http.Get(u.String())
+				if err == nil {
+					defer r.Body.Close()
+				}
 			default:
 				err = errors.New("unknown HTTP method")
 			}
@@ -69,6 +72,7 @@ func (lg *loadGen) postids() (resp postApiResponse) {
 		log.Print("failed to get post ids")
 		return
 	}
+	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
 	json.Unmarshal(body, &resp)
 	return
@@ -90,6 +94,7 @@ func (lg *loadGen) like(likeType string, random int) {
 			if err != nil {
 				panic(err)
 			}
+			defer r.Body.Close()
 			log.Printf("LIKE RANDOM: %s %s\n", r.Status, u.String())
 			if r.StatusCode != 200 {
 				return
@@ -104,6 +109,7 @@ func (lg *loadGen) like(likeType string, random int) {
 				if err != nil {
 					panic(err)
 				}
+				defer r.Body.Close()
 				log.Printf("LIKE ORDERED: %s %s\n", r.Status, u.String())
 				if r.StatusCode != 200 {
 					return
@@ -122,6 +128,7 @@ func (lg *loadGen) like(likeType string, random int) {
 				if err != nil {
 					panic(err)
 				}
+				defer r.Body.Close()
 				log.Printf("LIKE ORDERED: %s %s\n", r.Status, u.String())
 				if r.StatusCode != 200 {
 					return
@@ -149,6 +156,7 @@ func (lg *loadGen) comment(nr int) {
 		if err != nil {
 			panic(err)
 		}
+		defer r.Body.Close()
 		log.Printf("COMMENT: %s %s\n", r.Status, u.String())
 	}
 }
