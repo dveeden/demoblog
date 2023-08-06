@@ -1,47 +1,55 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
-type postApiResponse struct {
-	PostIds []uint64 `json:"postids"`
+func postsApi(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	posts, err := Posts(0)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to fetch posts"))
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(posts)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to encode posts"))
+		return
+	}
 }
 
 func postApi(w http.ResponseWriter, r *http.Request) {
-	resp := postApiResponse{}
-
-	db, err := sql.Open("mysql", dburi)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	postId, err := strconv.ParseUint(strings.TrimPrefix(r.URL.Path, "/api/posts/"), 10, 64)
 	if err != nil {
 		log.Print(err)
-		w.WriteHeader(500)
-		w.Write([]byte("Database connection failed"))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to get postid from URL"))
 		return
 	}
-	defer db.Close()
 
-	rows, err := db.Query(`SELECT id FROM posts`)
+	post, err := PostById(postId)
 	if err != nil {
 		log.Print(err)
-		w.WriteHeader(500)
-		w.Write([]byte("failed to encode response"))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to retrieve post"))
 		return
 	}
-	for rows.Next() {
-		var postId uint64
-		rows.Scan(&postId)
-		resp.PostIds = append(resp.PostIds, postId)
-	}
 
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(resp)
+	err = json.NewEncoder(w).Encode(post)
 	if err != nil {
 		log.Print(err)
-		w.WriteHeader(500)
-		w.Write([]byte("failed to encode response"))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to encode post"))
 		return
 	}
 }
