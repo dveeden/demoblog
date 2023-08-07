@@ -45,6 +45,8 @@ func postApi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	post.Render()
+
 	err = json.NewEncoder(w).Encode(post)
 	if err != nil {
 		log.Print(err)
