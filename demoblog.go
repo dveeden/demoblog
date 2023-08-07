@@ -32,5 +32,6 @@ func main() {
 
 	http.HandleFunc("/api/posts", postsApi)
 	http.HandleFunc("/api/posts/", postApi)
+	http.HandleFunc("/api/comments/", commentsApi)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
