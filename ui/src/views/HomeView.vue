@@ -19,7 +19,7 @@ function postFetch() {
 const posts: Ref<Post[]>  = postFetch()
 
 function like(postId: number) {
-	console.log("Liking " + postId);
+	console.log("Liking post with id=" + postId);
 }
 </script>
 

@@ -8,6 +8,7 @@ type Post = {
 	Id: number
 	Title: string
 	Body: string
+	Rendered: string
 }
 
 type Comment = {
@@ -15,7 +16,7 @@ type Comment = {
 	Comment: string
 }
 
-const post: Ref<Post> = ref({Id: 0, Title: "", Body: ""});
+const post: Ref<Post> = ref({Id: 0, Title: "", Body: "", Rendered: ""});
 fetch(url + "/posts/" + route.params.id)
 	.then(r => r.json())
 	.then(d => {
@@ -40,7 +41,8 @@ function submitComment() {
 
 <template>
 	<h1>{{ post.Title }}</h1>
-	{{ post.Body }}
+	
+	<span v-html="post.Rendered"></span>
 
 	<hr>
 
