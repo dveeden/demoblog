@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import {useRoute} from "vue-router";
 const route = useRoute();
 const url = "http://127.0.0.1:8080/api/posts/" + route.params.id;
 
-const post = ref(null);
+type Post = {
+	Id: number
+	Title: string
+	Body: string
+}
+
+const post: Ref<Post> = ref({Id: 0, Title: "", Body: ""});
 fetch(url)
 	.then(r => r.json())
 	.then(d => {
