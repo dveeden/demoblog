@@ -29,13 +29,23 @@ function commentsFetch() {
 		.then(r => r.json())
 		.then(d => comments.value = d);
 	return comments
-
 }
 const comments: Ref<Comment[]>  = commentsFetch()
 const newComment = ref("")
 
 function submitComment() {
-	console.log("New comment: " + newComment.value)
+	const formData = new URLSearchParams({Comment: newComment.value});
+	fetch(url + "/comments/" + route.params.id, {
+		method: "POST",
+		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		body: formData
+	})
+		.then(r => r.json())
+		.then(c => console.log(c));
+	console.log(comments.value.push({
+		Id: 0,
+		Comment: newComment.value
+	}))
 }
 </script>
 

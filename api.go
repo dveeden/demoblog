@@ -80,7 +80,7 @@ func commentsApi(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Print(err)
 			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Failed to encode post"))
+			w.Write([]byte("Failed to encode comment"))
 			return
 		}
 	case "POST":
@@ -94,13 +94,25 @@ func commentsApi(w http.ResponseWriter, r *http.Request) {
 		var comment Comment
 		comment.PostID = postId
 		comment.Comment = r.FormValue("Comment")
-		err = comment.Store()
+		commentId, err := comment.Store()
 		if err != nil {
 			log.Print(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Failed to store comment"))
 			return
 		}
+		comment.Id = uint64(commentId)
+		err = json.NewEncoder(w).Encode(comment)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Failed to encode comment"))
+			return
+		}
+	case "OPTIONS":
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+		w.WriteHeader(http.StatusOK)
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Request method not supported"))

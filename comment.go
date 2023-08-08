@@ -35,23 +35,24 @@ func CommentsById(id uint64) (comments []Comment, err error) {
 	return comments, nil
 }
 
-func (c *Comment) Store() error {
+func (c *Comment) Store() (id int64, err error) {
 	db, err := sql.Open("mysql", dburi)
 	if err != nil {
-		return err
+		return
 	}
 	defer db.Close()
 
+	var res sql.Result
 	if c.Id == 0 {
-		_, err = db.Exec("INSERT INTO comments(post_id, body) VALUES(?,?)",
+		res, err = db.Exec("INSERT INTO comments(post_id, body) VALUES(?,?)",
 			c.PostID, c.Comment)
 	} else {
-		_, err = db.Exec("INSERT INTO comments(id, post_id, body) VALUES(?,?,?)",
+		res, err = db.Exec("INSERT INTO comments(id, post_id, body) VALUES(?,?,?)",
 			c.Id, c.PostID, c.Comment)
 	}
 	if err != nil {
-		return err
+		return
 	}
-
-	return nil
+	id, err = res.LastInsertId()
+	return
 }
