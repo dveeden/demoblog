@@ -45,7 +45,8 @@ function submitComment() {
 			if (comments.value == null) {
 				comments.value = []
 			}
-			comments.value.unshift(d)
+			comments.value.unshift(d);
+			newComment.value = "";
 		});
 }
 </script>
