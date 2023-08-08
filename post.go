@@ -32,6 +32,7 @@ func PostById(id uint64) (post Post, err error) {
 	if err != nil {
 		return post, err
 	}
+	defer db.Close()
 
 	row := db.QueryRow("SELECT id,title,body FROM posts WHERE id = ?", id)
 
@@ -47,6 +48,7 @@ func Posts(start uint64) (posts []Post, err error) {
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 
 	var p Post
 	rows, err := db.Query("SELECT id,title,body FROM posts WHERE id > ? ORDER BY created DESC", start)

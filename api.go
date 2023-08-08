@@ -66,19 +66,43 @@ func commentsApi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comments, err := CommentsById(postId)
-	if err != nil {
-		log.Print(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to retrieve post"))
-		return
-	}
+	switch r.Method {
+	case "GET":
+		comments, err := CommentsById(postId)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Failed to retrieve post"))
+			return
+		}
 
-	err = json.NewEncoder(w).Encode(comments)
-	if err != nil {
-		log.Print(err)
+		err = json.NewEncoder(w).Encode(comments)
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Failed to encode post"))
+			return
+		}
+	case "POST":
+		err = r.ParseForm()
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Failed to parse post data"))
+			return
+		}
+		var comment Comment
+		comment.PostID = postId
+		comment.Comment = r.FormValue("Comment")
+		err = comment.Store()
+		if err != nil {
+			log.Print(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Failed to store comment"))
+			return
+		}
+	default:
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to encode post"))
-		return
+		w.Write([]byte("Request method not supported"))
 	}
 }
