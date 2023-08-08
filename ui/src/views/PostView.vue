@@ -41,11 +41,12 @@ function submitComment() {
 		body: formData
 	})
 		.then(r => r.json())
-		.then(c => console.log(c));
-	console.log(comments.value.push({
-		Id: 0,
-		Comment: newComment.value
-	}))
+		.then(d => {
+			if (comments.value == null) {
+				comments.value = []
+			}
+			comments.value.unshift(d)
+		});
 }
 </script>
 
