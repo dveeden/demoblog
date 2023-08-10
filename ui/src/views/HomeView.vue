@@ -6,6 +6,7 @@ type Post = {
 	Id: number
 	Title: string
 	Body: string
+	Likes: number
 }
 
 function postFetch() {
@@ -19,7 +20,13 @@ function postFetch() {
 const posts: Ref<Post[]>  = postFetch()
 
 function like(postId: number) {
-	console.log("Liking post with id=" + postId);
+	fetch(url + "/" + postId + "/like", {method: "POST"}).then(r =>
+		posts.value.forEach(p => {
+			if (p.Id == postId) {
+				p.Likes += 1
+			}
+		})
+	)
 }
 </script>
 
@@ -28,7 +35,7 @@ function like(postId: number) {
 		<h1><font-awesome-icon :icon="['far', 'newspaper']" /> {{ post.Title }}</h1><br>
 		{{ post.Body.substring(0,100) }}
 		<br>
-		<button @click="like(post.Id)"><font-awesome-icon :icon="['far', 'thumbs-up']" /> Like</button>&nbsp;
+		<button @click="like(post.Id)"><font-awesome-icon :icon="['far', 'thumbs-up']" /> Like</button> ({{ post.Likes }})&nbsp;
 		<router-link :to="{ name: 'post', params: { id: post.Id }}">Read more...</router-link>
 	<br>
 	</template>
