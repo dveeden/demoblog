@@ -6,13 +6,12 @@ Run a local TiDB database on port 40000
 tiup playground v7.2.0
 ```
 
-Create the database schema and initial data
+Create the database schema
 
 ```
 mysql --comments -h 127.0.0.1 -P 4000 -u root
 ...
-source 0001_schema.sql
-source 0002_data.sql
+CREATE SCHEMA blog COLLATE utf8mb4_bin;
 ```
 
 Now build and run the code
@@ -26,6 +25,16 @@ And finally open the webpage in your browser.
 ```
 xdg-open http://127.0.0.1:8080/
 ```
+
+# HTTP API
+
+| Endpoint | HTTP Verb | Description |
+|----------|-----------|-------------|
+| /api/posts | GET | List of posts |
+| /api/posts/:postid | GET | Get rendered post |
+| /api/posts/:postid/like | POST | Increase post likes |
+| /api/comments/:postid | GET | Get comments for post |
+| /api/comments/:postid | POST | Store comment for post |
 
 # TODO
 

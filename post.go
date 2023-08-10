@@ -14,6 +14,7 @@ type Post struct {
 	Id       uint64
 	Title    string
 	Body     string
+	Likes    uint64
 	Rendered template.HTML
 }
 
@@ -27,6 +28,21 @@ func (p *Post) Render() {
 	p.Rendered = template.HTML(string(markdown.Render(doc, htmlRenderer)))
 }
 
+func (p *Post) Like() error {
+	db, err := sql.Open("mysql", dburi)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec("UPDATE posts SET likes=likes+1 WHERE id=?", p.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func PostById(id uint64) (post Post, err error) {
 	db, err := sql.Open("mysql", dburi)
 	if err != nil {
@@ -34,9 +50,9 @@ func PostById(id uint64) (post Post, err error) {
 	}
 	defer db.Close()
 
-	row := db.QueryRow("SELECT id,title,body FROM posts WHERE id = ?", id)
+	row := db.QueryRow("SELECT id,title,body,likes FROM posts WHERE id = ?", id)
 
-	err = row.Scan(&post.Id, &post.Title, &post.Body)
+	err = row.Scan(&post.Id, &post.Title, &post.Body, &post.Likes)
 	if err != nil {
 		return post, err
 	}
@@ -51,13 +67,15 @@ func Posts(start uint64) (posts []Post, err error) {
 	defer db.Close()
 
 	var p Post
-	rows, err := db.Query("SELECT id,title,body FROM posts WHERE id > ? ORDER BY created DESC", start)
+	rows, err := db.Query(
+		"SELECT id,title,body,likes FROM posts WHERE id > ? ORDER BY created DESC", start,
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&p.Id, &p.Title, &p.Body)
+		err = rows.Scan(&p.Id, &p.Title, &p.Body, &p.Likes)
 		if err != nil {
 			return nil, err
 		}
