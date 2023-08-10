@@ -36,6 +36,10 @@ xdg-open http://127.0.0.1:8080/
 | /api/comments/:postid | GET | Get comments for post |
 | /api/comments/:postid | POST | Store comment for post |
 
+
+# Development
+
+The `./demoblog` binary holds both the backend code for the HTTP API and the files for the frontend. Just running this binary is sufficient for normal operation. However you can run `npm run dev` in the `ui` directory to get development environment with automatic reloading based on [Vite](https://vitejs.dev/).
 # TODO
 
 - General
