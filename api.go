@@ -13,6 +13,23 @@ var isPostLike = regexp.MustCompile(`^/api/posts/(\d*)/like`)
 
 func postsApi(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	switch r.Method {
+	case "GET":
+		postsApiGet(w, r)
+	case "POST":
+		postsApiPost(w, r)
+	case "OPTIONS":
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Accept")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+		w.WriteHeader(http.StatusOK)
+	default:
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Request method not supported"))
+	}
+}
+
+func postsApiGet(w http.ResponseWriter, r *http.Request) {
 	posts, err := Posts(0)
 	if err != nil {
 		log.Print(err)
@@ -27,6 +44,23 @@ func postsApi(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Failed to encode posts"))
 		return
+	}
+}
+
+func postsApiPost(w http.ResponseWriter, r *http.Request) {
+	var post Post
+	err := json.NewDecoder(r.Body).Decode(&post)
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to decode new post"))
+	}
+
+	_, err = post.Store()
+	if err != nil {
+		log.Print(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Failed to store new post"))
 	}
 }
 

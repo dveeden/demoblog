@@ -43,6 +43,24 @@ func (p *Post) Like() error {
 	return nil
 }
 
+func (p *Post) Store() (id int64, err error) {
+	db, err := sql.Open("mysql", dburi)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	authorId := 1
+	if p.Id == 0 {
+		_, err = db.Exec("INSERT INTO posts(title,body,author_id) VALUES(?,?,?)",
+			p.Title, p.Body, authorId)
+	} else {
+		_, err = db.Exec("INSERT INTO posts(id,title,body,author_id) VALUES(?,?,?)",
+			p.Id, p.Title, p.Body, authorId)
+	}
+	return
+}
+
 func PostById(id uint64) (post Post, err error) {
 	db, err := sql.Open("mysql", dburi)
 	if err != nil {
