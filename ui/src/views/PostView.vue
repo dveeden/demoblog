@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type Ref, ref } from 'vue';
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 const route = useRoute();
 const url = "http://127.0.0.1:8080/api";
 
@@ -16,7 +16,7 @@ type Comment = {
 	Comment: string
 }
 
-const post: Ref<Post> = ref({Id: 0, Title: "", Body: "", Rendered: ""});
+const post: Ref<Post> = ref({ Id: 0, Title: "", Body: "", Rendered: "" });
 fetch(url + "/posts/" + route.params.id)
 	.then(r => r.json())
 	.then(d => {
@@ -30,11 +30,11 @@ function commentsFetch() {
 		.then(d => comments.value = d);
 	return comments
 }
-const comments: Ref<Comment[]>  = commentsFetch()
+const comments: Ref<Comment[]> = commentsFetch()
 const newComment = ref("")
 
 function submitComment() {
-	const formData = new URLSearchParams({Comment: newComment.value});
+	const formData = new URLSearchParams({ Comment: newComment.value });
 	fetch(url + "/comments/" + route.params.id, {
 		method: "POST",
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -53,7 +53,7 @@ function submitComment() {
 
 <template>
 	<h1>{{ post.Title }}</h1>
-	
+
 	<span v-html="post.Rendered"></span>
 
 	<hr>
@@ -62,7 +62,7 @@ function submitComment() {
 	<button @click="submitComment">Submit</button>
 
 	<div v-for="comment in comments" :key="comment.Id" class="comment">
-	Comment {{ comment.Id }} - {{ comment.Comment }}
+		Comment {{ comment.Id }} - {{ comment.Comment }}
 	</div>
 </template>
 

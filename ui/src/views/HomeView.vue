@@ -17,10 +17,10 @@ function postFetch() {
 	return posts
 
 }
-const posts: Ref<Post[]>  = postFetch()
+const posts: Ref<Post[]> = postFetch()
 
 function like(postId: number) {
-	fetch(url + "/" + postId + "/like", {method: "POST"}).then(r =>
+	fetch(url + "/" + postId + "/like", { method: "POST" }).then(r =>
 		posts.value.forEach(p => {
 			if (p.Id == postId) {
 				p.Likes += 1
@@ -33,10 +33,11 @@ function like(postId: number) {
 <template>
 	<template v-for="post in posts" :key="post.Id">
 		<h1><font-awesome-icon :icon="['far', 'newspaper']" /> {{ post.Title }}</h1><br>
-		{{ post.Body.substring(0,100) }}
+		{{ post.Body.substring(0, 100) }}
 		<br>
-		<button @click="like(post.Id)"><font-awesome-icon :icon="['far', 'thumbs-up']" /> Like</button> ({{ post.Likes }})&nbsp;
-		<router-link :to="{ name: 'post', params: { id: post.Id }}">Read more...</router-link>
-	<br>
+		<button @click="like(post.Id)"><font-awesome-icon :icon="['far', 'thumbs-up']" /> Like</button> ({{ post.Likes
+		}})&nbsp;
+		<router-link :to="{ name: 'post', params: { id: post.Id } }">Read more...</router-link>
+		<br>
 	</template>
 </template>
