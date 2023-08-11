@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { type Ref, ref } from 'vue';
-const url = "http://127.0.0.1:8080/api/posts";
+import { baseurl } from './config.js'
 import { type Post } from './types.js'
 
 function postFetch() {
 	const posts = ref([]);
-	fetch(url)
+	fetch(baseurl + "/posts")
 		.then(r => r.json())
 		.then(d => posts.value = d);
 	return posts
@@ -14,7 +14,7 @@ function postFetch() {
 const posts: Ref<Post[]> = postFetch()
 
 function like(postId: number) {
-	fetch(url + "/" + postId + "/like", { method: "POST" }).then(r =>
+	fetch(baseurl + "/posts/" + postId + "/like", { method: "POST" }).then(r =>
 		posts.value.forEach(p => {
 			if (p.Id == postId) {
 				p.Likes += 1

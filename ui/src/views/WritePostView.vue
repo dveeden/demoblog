@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
+import { useRouter, useRoute } from 'vue-router'
+import { baseurl } from './config.js'
 import { type Post } from './types.js'
+
+const router = useRouter()
 
 const p: Post = reactive({
     Id: 0,
@@ -11,7 +15,13 @@ const p: Post = reactive({
 })
 
 function submitPost() {
-    console.log("Submit: " + JSON.stringify(p))
+    fetch(baseurl + '/posts', {
+        method: "POST",
+        body: JSON.stringify(p)
+    })
+    .then(() =>
+        router.push('/')
+    )
 }
 </script>
 

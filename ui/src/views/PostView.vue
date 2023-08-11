@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { type Ref, ref } from 'vue';
 import { useRoute } from "vue-router";
+import { baseurl } from './config.js'
 import { type Post, type Comment } from './types.js'
 
 const route = useRoute();
-const url = "http://127.0.0.1:8080/api";
 const post: Ref<Post> = ref({ Id: 0, Title: "", Body: "", Rendered: "", Likes: 0 });
 const comments: Ref<Comment[]> = commentsFetch()
 const newComment = ref("")
 
 function commentsFetch() {
 	const comments = ref([]);
-	fetch(url + "/comments/" + route.params.id)
+	fetch(baseurl + "/comments/" + route.params.id)
 		.then(r => r.json())
 		.then(d => comments.value = d);
 	return comments
@@ -20,7 +20,7 @@ function commentsFetch() {
 
 function submitComment() {
 	const formData = new URLSearchParams({ Comment: newComment.value });
-	fetch(url + "/comments/" + route.params.id, {
+	fetch(baseurl + "/comments/" + route.params.id, {
 		method: "POST",
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 		body: formData
@@ -35,7 +35,7 @@ function submitComment() {
 		});
 }
 
-fetch(url + "/posts/" + route.params.id)
+fetch(baseurl + "/posts/" + route.params.id)
 	.then(r => r.json())
 	.then(d => {
 		post.value = d
