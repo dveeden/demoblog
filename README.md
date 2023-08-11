@@ -39,50 +39,29 @@ xdg-open http://127.0.0.1:8080/
 
 # Development
 
-The `./demoblog` binary holds both the backend code for the HTTP API and the files for the frontend. Just running this binary is sufficient for normal operation. However you can run `npm run dev` in the `ui` directory to get development environment with automatic reloading based on [Vite](https://vitejs.dev/).
+The `./demoblog` binary holds both the backend code for the HTTP API and the files for the frontend. Just running this
+binary is sufficient for normal operation. However you can run `npm run dev` in the `ui` directory to get development 
+environment with automatic reloading based on [Vite](https://vitejs.dev/).
 # TODO
 
 - General
+    - Editing posts
+    - Pagination for the list of posts
     - Show the number of likes on posts
     - Show the number of likes on comments
-    - Storing a cached version of the rendered markdown? Could be used for the summary on the index page.
-    - TiCDC & Kafka for comments, likes, heartbeat (alert?)
+    - TiCDC & Kafka?
+- Load generator
+    - Write one
 - Analytics
     - Number of comments per author
     - Most liked posts/comments
-
-    ```
-    SELECT
-        p.title,
-        p.likes,
-        SUM(c.likes) 'comment likes'
-    FROM
-        posts p
-    JOIN
-        comments c ON c.post_id=p.id
-    GROUP BY
-        p.id
-    ORDER BY
-        p.likes+SUM(c.likes) DESC
-    LIMIT 5;
-    ```
     - Average length of comment, post
     - Comments per hour of day
 
 
 # Things to try
 
-- Block writes
-
-```sql
-BEGIN;
-SELECT * FROM ticker FOR UPDATE;
-DO SLEEP(10);
-ROLLBACK;
-```
-
-This should show increase in the ticker latency. Other things like DDL etc should not show this.
-
+- Block writes with a `SELECT ... FOR UPDATE`
 - Add/remove TiFlash replicas
 - Add/remove index on `comments.post_id`
 - Try foreign keys
