@@ -53,6 +53,10 @@ Here are some example database URI's:
 The `./demoblog` binary holds both the backend code for the HTTP API and the files for the frontend. Just running this
 binary is sufficient for normal operation. However you can run `npm run dev` in the `ui` directory to get development 
 environment with automatic reloading based on [Vite](https://vitejs.dev/).
+
+To build a new binary, just run `make`. This runs `npm run build` to build the frontend
+and `go build` to build the backend and embed the generated frontend code.
+
 # TODO
 
 - General
