@@ -36,6 +36,17 @@ xdg-open http://127.0.0.1:8080/
 | /api/comments/:postid | GET | Get comments for post |
 | /api/comments/:postid | POST | Store comment for post |
 
+# Backends
+
+This should work with pretty much all recent versions of TiDB and MySQL.
+
+Here are some example database URI's:
+
+| Backend | Example DB URI |
+|---------|:---------------|
+| MySQL | `root:somepassword@tcp(127.0.0.1:3306)/blog?parseTrime=true` |
+| TiDB via TiUP Playground | `root@tcp(127.0.0.1:4000)/blog?parseTrime=true` |
+| TiDB Cloud | `JwG2GmaeZKU74iN.root:somepassword@tcp(gateway01.eu-central-1.prod.aws.tidbcloud.com:4000)/blog?tls=true&parseTime=true` |
 
 # Development
 

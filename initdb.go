@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -11,12 +12,49 @@ import (
 func initDB() error {
 	log.Println("Initializing database")
 
+	err := createSchema()
+	if err != nil {
+		return err
+	}
+
 	db, err := sql.Open("mysql", dburi)
 	if err != nil {
 		return fmt.Errorf("failed to open database: %w", err)
 	}
+	defer db.Close()
 
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS posts (
+	err = createTables(db)
+	if err != nil {
+		return err
+	}
+
+	err = populateTables(db)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func createSchema() error {
+	// When connecting with a schema in the dburi that doesn't exist the server doesn't allow us to connect,
+	// so here we remove the schema from the dburi.
+	tempDburi := strings.Replace(dburi, "/blog", "/", 1)
+	db, err := sql.Open("mysql", tempDburi)
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+	defer db.Close()
+
+	// utf8mb4_bin should work with all MySQL and TiDB versions.
+	_, err = db.Exec("CREATE SCHEMA blog COLLATE utf8mb4_bin")
+	if err != nil {
+		log.Print(err)
+	}
+	return nil
+}
+
+func createTables(db *sql.DB) error {
+	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS posts (
 	     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	     created TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
 	     updated TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
@@ -52,7 +90,9 @@ func initDB() error {
 		return fmt.Errorf("failed to create comments table: %w", err)
 	}
 
-	// TiFlash ColumnStore
+	// TiFlash ColumnStore.
+	// This is expected to fail on MySQL or on TiDB clusters that don't have
+	// TiFlash nodes available.
 	_, err = db.Exec(`/*T! ALTER TABLE posts SET TIFLASH REPLICA 1 */`)
 	if err != nil {
 		log.Printf("failed to enable TiFlash replica for posts: %s", err)
@@ -62,7 +102,11 @@ func initDB() error {
 		log.Printf("failed to enable TiFlash replica for comments: %s", err)
 	}
 
-	_, err = db.Exec(`INSERT INTO authors(id, name) VALUES(1, "John Doe")`)
+	return nil
+}
+
+func populateTables(db *sql.DB) error {
+	_, err := db.Exec(`INSERT INTO authors(id, name) VALUES(1, "John Doe")`)
 	if err != nil {
 		log.Printf("failed to load authors: %s", err)
 	}
